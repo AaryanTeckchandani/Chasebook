@@ -1,4 +1,4 @@
-const firebaseConfig = {
+var firebaseConfig = {
       apiKey: "AIzaSyDMeLokSgzCoTdKSspYprFBKBtOFMtratY",
       authDomain: "kwitter-65f3f.firebaseapp.com",
       databaseURL: "https://kwitter-65f3f-default-rtdb.firebaseio.com",
@@ -8,28 +8,36 @@ const firebaseConfig = {
       appId: "1:866775763741:web:d440cc6fe0aa612591eff4"
     };
     
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig); 
+username = localStorage.getItem("username");
+document.getElementById("username").innerHTML="Welcome "+ username
 
-function getData() {firebase.database().ref("/").on('value', function(snapshot) {document.getElementById("output").innerHTML = "";snapshot.forEach(function(childSnapshot) {childKey  = childSnapshot.key;
+    function getData() {firebase.database().ref("/").on('value', function(snapshot) {document.getElementById("output").innerHTML = "";snapshot.forEach(function(childSnapshot) {childKey  = childSnapshot.key;
        Room_names = childKey;
-      //Start code
-
-      //End code
+      console.log("Room Names : " + Room_names);
+      row = "<div class='roomName' id="+Room_names+" onclick='redirectToRoomName(this.id)' >#"+Room_names+"</div><hr>" ;
+document.getElementById("output").innerHTML += row;
       });});}
 getData();
 
-
 function addRoom(){
-      window.alert("1");
-      roomname=document.getElementById("roomname").value;
-      localStorage.setItem("roomname",roomname);
-      window.alert(roomname);
-      window.location="chasebookRoom.html";
+  roomName = document.getElementById("roomname").value;
+  firebase.database().ref("/").child(roomName).update({
+    purpose:"adding room name"
+  });
+localStorage.setItem("roomName", roomName);
+window.location="chasebookPage.html";
 }
 
-function logOut(){
-      logout=document.getElementById("logout").value;
-      localStorage.setItem("logout",logout);
-      window.location="index.html";
+function redirectToRoomName(name){
+  console.log(name);
+  localStorage.setItem("roomName" , name);
+  window.location="chasebookPage.html";
 }
+
+function logout(){
+  localStorage.removeItem("username")
+  localStorage.removeItem("roomName")
+  window.location="index.html"
+}
+
